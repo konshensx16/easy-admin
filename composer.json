@@ -26,7 +26,8 @@
         "symfony/twig-bundle": "4.3.*",
         "symfony/validator": "4.3.*",
         "symfony/web-link": "4.3.*",
-        "symfony/yaml": "4.3.*"
+        "symfony/yaml": "4.3.*",
+        "vich/uploader-bundle": "^1.10"
     },
     "require-dev": {
         "symfony/debug-pack": "*",

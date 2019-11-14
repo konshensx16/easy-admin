@@ -32,11 +32,14 @@ easy_admin:
             - {type: 'group', icon: 'th-list', label: 'Other Information', css_class: 'col-lg-5'}
             - category
             - tags
+            - {type: 'group', icon: 'clip', label: 'Attachments', css_class: 'col-lg-5'}
+            - { property: 'thumbnailFile', type: 'vich_image' }
       list:
         collapse_actions: true
         actions: ['show', 'edit', 'delete']
         batch_actions: ['delete']
         title: "Some posts from the other world"
+        fields: ['title', 'content', 'createdAt', {property: 'thumbnail', type: 'image', base_path: '%uploads_path%'}]
         filters: ['published']
       show:
         fields:
@@ -44,6 +47,7 @@ easy_admin:
           - {property: 'content', type: 'raw'}
           - createdAt
           - published
+          - {property: 'thumbnail', type: 'image', base_path: '%uploads_path%'}
       edit:
         help: "Hello there"
         fields:
