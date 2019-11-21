@@ -34,6 +34,7 @@ easy_admin:
             - tags
             - {type: 'group', icon: 'clip', label: 'Attachments', css_class: 'col-lg-5'}
             - { property: 'thumbnailFile', type: 'vich_image' }
+            - { property: 'attachments', type: 'collection', type_options: {entry_type: 'App\Form\AttachmentType', by_reference: false} }
       list:
         collapse_actions: true
         actions: ['show', 'edit', 'delete']
@@ -48,6 +49,7 @@ easy_admin:
           - createdAt
           - published
           - {property: 'thumbnail', type: 'image', base_path: '%uploads_path%'}
+          - {property: 'attachments', template: 'images.html.twig' }
       edit:
         help: "Hello there"
         fields:
