@@ -51,7 +51,7 @@ class Post
     private $category;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Tag", mappedBy="posts")
+     * @ORM\ManyToMany(targetEntity="Tag", mappedBy="posts", cascade={"persist"})
      */
     private $tags;
 

@@ -1,5 +1,10 @@
 easy_admin:
   design:
+    assets:
+      css:
+        - '/assets/bs-tags/bootstrap-tagsinput.css'
+      js:
+        - '/assets/bs-tags/bootstrap-tagsinput.js'
     menu:
       - {label: "Entities"}
       - label: "Posts"
@@ -26,12 +31,12 @@ easy_admin:
         fields:
             - {type: 'group', icon: 'pencil', label: 'Basic Information', css_class: 'col-lg-7'}
             - title
-            - {property: 'content', type: 'text_editor'}
+            - {property: 'content'}
             - createdAt
             - published
             - {type: 'group', icon: 'th-list', label: 'Other Information', css_class: 'col-lg-5'}
             - category
-            - tags
+            - { property: 'tags', type: 'App\Form\TagType', type_options: {attr: {data-role: 'tagsinput'}}}
             - {type: 'group', icon: 'clip', label: 'Attachments', css_class: 'col-lg-5'}
             - { property: 'thumbnailFile', type: 'vich_image' }
             - { property: 'attachments', type: 'collection', type_options: {entry_type: 'App\Form\AttachmentType', by_reference: false} }
@@ -50,11 +55,9 @@ easy_admin:
           - published
           - {property: 'thumbnail', type: 'image', base_path: '%uploads_path%'}
           - {property: 'attachments', template: 'images.html.twig' }
+          - tags
       edit:
         help: "Hello there"
-        fields:
-          - '-tags'
-
 
     Category:
       class: App\Entity\Category
