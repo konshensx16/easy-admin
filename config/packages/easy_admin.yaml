@@ -10,14 +10,14 @@ easy_admin:
       - label: "Posts"
         children:
           - {entity: Post, label: "Posts list", icon: "th-list"}
-          - {entity: Post, label: "Add post", icon: "plus", params: {action: 'new'}}
+          - {entity: Post, label: "Add post", icon: "plus", params: {action: 'new'}, permission: 'ROLE_ADMIN'}
       - label: "Category"
         children:
           - {entity: Category, label: "List all categories", icon: "th-list"}
           - {entity: Category, label: "Add category", icon: "plus"}
       - Tag
       - {label: "Settings"}
-      - {entity: User, icon: "user"}
+      - {entity: User, icon: "user", permission: 'ROLE_ADMIN'}
   site_name: 'OverSeas <b>Media</b>'
   user:
     display_name: true
@@ -45,7 +45,7 @@ easy_admin:
         actions: ['show', 'edit', 'delete']
         batch_actions: ['delete']
         title: "Some posts from the other world"
-        fields: ['title', 'content', 'createdAt', {property: 'thumbnail', type: 'image', base_path: '%uploads_path%'}]
+        fields: ['title', 'content', 'createdAt', {property: 'user.email', label: 'Author', permission: 'ROLE_ADMIN'}, {property: 'thumbnail', type: 'image', base_path: '%uploads_path%'}]
         filters: ['published']
       show:
         fields:
@@ -58,6 +58,8 @@ easy_admin:
           - tags
       edit:
         help: "Hello there"
+      new:
+        item_permission: 'ROLE_ADMIN'
 
     Category:
       class: App\Entity\Category
@@ -69,3 +71,5 @@ easy_admin:
           - slug
     User:
       class: App\Entity\User
+      list:
+        item_permission: 'ROLE_ADMIN'
