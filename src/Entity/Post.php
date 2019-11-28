@@ -56,7 +56,7 @@ class Post
     private $tags;
 
     /**
-     * @ORM\Column(type="string", length=200)
+     * @ORM\Column(type="string", length=200, nullable=true)
      */
     private $thumbnail;
 
@@ -69,6 +69,11 @@ class Post
      * @ORM\OneToMany(targetEntity="Attachment", mappedBy="post", cascade={"persist"})
      */
     private $attachments;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="posts")
+     */
+    private $user;
 
     /**
      * @return mixed
@@ -252,6 +257,18 @@ class Post
                 $attachment->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
