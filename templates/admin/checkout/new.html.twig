@@ -1,0 +1,47 @@
+{% extends '@EasyAdmin/default/new.html.twig' %}
+
+{% block main %}
+    {% block entity_form %}
+        {#        {{ form(form) }}#}
+        <div id="smartwizard">
+            <ul>
+                <li><a href="#step-1">Billing Address<br/><small>What the hell</small></a></li>
+                <li><a href="#step-2">Payment<br/><small>messed up</small></a></li>
+                <li><a href="#step-3">Confirmation<br/><small>Step description</small></a></li>
+            </ul>
+
+            <div>
+                {{ form_start(form) }}
+                <div id="step-1" class="">
+                    {{ form_row(form.fullname) }}
+                    {{ form_row(form.email) }}
+                    {{ form_row(form.adress) }}
+                    {{ form_row(form.city) }}
+                    {{ form_row(form.state) }}
+                    {{ form_row(form.zip) }}
+                </div>
+                <div id="step-2" class="" style="display: none">
+                    {{ form_row(form.nameOnCard) }}
+                    {{ form_row(form.creditCardNumber) }}
+                    {{ form_row(form.expMonth) }}
+                    {{ form_row(form.expYear) }}
+                    {{ form_row(form.CCV) }}
+                </div>
+                <div id="step-3" class="" style="display: none">
+                    <h3 class="text-center">Please Confirm!</h3>
+                    {{ form_rest(form) }}
+                </div>
+                {{ form_end(form, {'render_rest': false}) }}
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            $('#smartwizard').smartWizard();
+        });
+    </script>
+{% endblock %}

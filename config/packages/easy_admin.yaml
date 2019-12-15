@@ -3,8 +3,11 @@ easy_admin:
     assets:
       css:
         - '/assets/bs-tags/bootstrap-tagsinput.css'
+        - '/assets/smart-wizard/css/smart_wizard.css'
+        - '/assets/smart-wizard/css/smart_wizard_theme_arrows.css'
       js:
         - '/assets/bs-tags/bootstrap-tagsinput.js'
+        - '/assets/smart-wizard/js/jquery.smartWizard.js'
     menu:
       - {label: "Entities"}
       - label: "Posts"
@@ -18,6 +21,7 @@ easy_admin:
       - Tag
       - {label: "Settings"}
       - {entity: User, icon: "user", permission: 'ROLE_ADMIN'}
+      - Checkout
   site_name: 'OverSeas <b>Media</b>'
   user:
     display_name: true
@@ -74,3 +78,11 @@ easy_admin:
       class: App\Entity\User
       list:
         item_permission: 'ROLE_ADMIN'
+
+    Checkout:
+      class: App\Entity\Checkout
+      templates:
+        new: 'admin/checkout/new.html.twig'
+      new:
+        actions:
+          - '-list'
