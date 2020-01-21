@@ -5,9 +5,19 @@ easy_admin:
         - '/assets/bs-tags/bootstrap-tagsinput.css'
         - '/assets/smart-wizard/css/smart_wizard.css'
         - '/assets/smart-wizard/css/smart_wizard_theme_arrows.css'
-      js:
-        - '/assets/bs-tags/bootstrap-tagsinput.js'
-        - '/assets/smart-wizard/js/jquery.smartWizard.js'
+        - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css
+        - assets/css/select2.css
+        - assets/css/ct.css
+        js:
+          - assets/js/popper.js
+          - assets/js/bootstrap.js
+          - assets/js/app-style-switcher.js
+          - assets/js/perfect-scrollbar.jquery.min.js
+          - assets/js/feather.js
+          - assets/js/sidebar.js
+          - assets/js/custom.js
+          - '/assets/bs-tags/bootstrap-tagsinput.js'
+          - '/assets/smart-wizard/js/jquery.smartWizard.js'
     menu:
       - {label: "Entities"}
       - label: "Posts"
