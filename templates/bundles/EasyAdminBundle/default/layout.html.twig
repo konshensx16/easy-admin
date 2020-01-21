@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|split('_')|first|default('en') }}" dir="{{ easyadmin_config('design.rtl') ? 'rtl' : 'ltr' }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="generator" content="EasyAdmin" />
+
+    <title>{% block page_title %}{{ block('content_title')|striptags|raw }}{% endblock %}</title>
+
+    {% block head_stylesheets %}
+
+    {% endblock %}
+
+    {% block head_custom_stylesheets %}
+        {% for css_asset in easyadmin_config('design.assets.css') %}
+            <link rel="stylesheet" href="{{ asset(css_asset) }}">
+        {% endfor %}
+    {% endblock head_custom_stylesheets %}
+
+    {% if easyadmin_config('design.brand_color') != 'hsl(230, 55%, 60%)' %}
+        <style>
+            :root { --color-primary: {{ easyadmin_config('design.brand_color') }}; }
+        </style>
+    {% endif %}
+
+    {% block head_favicon %}
+        {% set favicon = easyadmin_config('design.assets.favicon') %}
+        <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}" />
+    {% endblock %}
+
+    {% block head_javascript %}
+        <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
+    {% endblock head_javascript %}
+</head>
+
+{% block body %}
+    <body id="{% block body_id %}{% endblock %}" class="easyadmin {% block body_class %}{% endblock %}">
+    <script>
+        document.body.classList.add(
+            'easyadmin-content-width-' + (localStorage.getItem('easyadmin/content/width') || 'normal'),
+            'easyadmin-sidebar-width-' + (localStorage.getItem('easyadmin/sidebar/width') || 'normal')
+        );
+    </script>
+
+    {% block wrapper_wrapper %}
+        <div id="main-wrapper" class="mini-sidebar" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+             data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
+            {% block wrapper %}
+                <header class="topbar" data-navbarbg="skin6">
+                    {% block header %}
+                        <nav class="navbar top-navbar navbar-expand-md navbar-light" role="navigation">
+                            {# LOGO #}
+                            <div data-logobg="skin6" class="navbar-header">
+                                <div id="header-logo" class="navbar-brand">
+                                    <b class="logo-icon">
+                                        <img src="{{ asset('/assets/img/logo-icon.png') }}" alt="">
+                                    </b>
+
+                                    <span class="logo-text">
+                                        <img src="{{ asset('/assets/img/logo-text.png') }}" alt="">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="navbar-collapse collapse">
+                                <ul class="navbar-nav float-left mr-auto ml-3 pl-1"></ul>
+                                {% set _user_name = easyadmin_read_property(app.user, easyadmin_config('user.name_property_path'))|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) %}
+                                {% set _logout_path = easyadmin_logout_path() %}
+                                {% set _user_has_logout = _logout_path is not empty %}
+                                {% set _user_is_impersonated = is_granted('ROLE_PREVIOUS_ADMIN') %}
+                                {% block header_custom_menu %}
+
+                                <ul class="navbar-nav float-right">
+                                    <li class="nav-item d-none d-md-block">
+                                        <a class="nav-link" href="javascript:void(0)">
+                                            {% block listing_search_wrapper %}{% endblock listing_search_wrapper %}
+                                        </a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            {% if easyadmin_config('user.display_avatar') %}
+                                                {% set _avatar_image_path = easyadmin_read_property(app.user, easyadmin_config('user.avatar_property_path')) %}
+                                                {% if null == _avatar_image_path %}
+                                                    <i class="fa fa-fw {{ app.user is not null ? 'fa-user-circle' : 'fa-user-times' }} user-avatar"></i>
+                                                {% else %}
+                                                    <img class="user-avatar" src="{{ _avatar_image_path }}" />
+                                                {% endif %}
+                                            {% endif %}
+                                            <span class="ml-2 d-none d-lg-inline-block"><span>Hello,</span>
+                                                <span class="text-dark">
+                                                    {% if easyadmin_config('user.display_name') %}
+                                                        <span class="user-name">{{ _user_name }}</span>
+                                                    {% endif %}
+                                                </span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down svg-icon"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                                        </a>
+
+                                        {% set _user_menu_content %}
+
+                                            {% block user_menu %}
+                                                {% if _user_has_logout or _user_is_impersonated %}
+                                                    <div class="dropdown-menu dropdown-menu-right user-dd">
+                                                        {% if _user_has_logout %}
+                                                            <a class="dropdown-item" href="{{ _logout_path }}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-power svg-icon mr-2 ml-1"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                                                                {{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
+                                                        {% endif %}
+                                                        {% if _user_is_impersonated %}
+                                                            <a class="user-action user-action-exit-impersonation" href="?_switch_user=_exit">{{ 'user.exit_impersonation'|trans(domain = 'EasyAdminBundle') }}</a>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            {% endblock user_menu %}
+                                        {% endset %}
+
+                                        {{ _user_menu_content }}
+                                    </li>
+                                </ul>
+                            </div>
+
+
+
+                            {% endblock header_custom_menu %}
+                        </nav>
+                    {% endblock header %}
+                </header>
+
+                <aside class="left-sidebar" data-sidebarbg="skin6">
+                    {% block sidebar %}
+                        <div class="scroll-sidebar ps-container ps-theme-default ps-active-y" data-sidebarbg="skin6">
+                            {% block main_menu_wrapper %}
+                                {{ include([
+                                    _entity_config is defined ? _entity_config.templates.menu,
+                                    easyadmin_config('design.templates.menu'),
+                                    '@EasyAdmin/default/menu.html.twig'
+                                ]) }}
+                            {% endblock main_menu_wrapper %}
+                        </div>
+
+                    {% endblock sidebar %}
+                </aside>
+
+                <div class="page-wrapper">
+                    {% block flash_messages %}
+                        {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@EasyAdmin/default/flash_messages.html.twig') }}
+                    {% endblock flash_messages %}
+
+                    {% block content_header_wrapper %}
+                        {% set _has_content_help = _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
+                        <div class="page-breadcrumb">
+                            <div class="row">
+                                <div class="col-5">
+                                    <h3 class="page-title text-truncate text-dark font-weight-medium mb-1">{% block content_title %}{% endblock %}</h3>
+                                    <div class="d-flex align-items-center">
+                                        <nav aria-label="breadcrumb">
+                                            <ol class="breadcrumb m-0 p-0">
+                                                {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
+                                                    <li class="breadcrumb-item">
+                                                        <a>{{ _entity_config[app.request.query.get('action')]['help']|trans(domain = _entity_config.translation_domain)|raw }}</a>
+                                                    </li>
+                                                {% endif %}
+                                            </ol>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <div class="col-7">
+                                    {% block global_actions_wrapper %}
+                                        <div class="global-actions">{% block global_actions %}{% endblock %}</div>
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock content_header_wrapper %}
+
+                    {% block content %}
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <section id="main" class="content-body">
+                                                {% block main %}{% endblock %}
+                                            </section>
+                                        </div>
+
+                                        {% block content_footer_wrapper %}
+                                            <div class="card-footer">
+                                                {% block content_footer %}{% endblock %}
+                                            </div>
+                                        {% endblock %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock content %}
+                </div>
+            {% endblock wrapper %}
+        </div>
+    {% endblock wrapper_wrapper %}
+
+    {% block body_javascript %}{% endblock body_javascript %}
+
+    {% block body_custom_javascript %}
+        {% for js_asset in easyadmin_config('design.assets.js') %}
+            <script src="{{ asset(js_asset) }}"></script>
+        {% endfor %}
+    {% endblock body_custom_javascript %}
+
+    </body>
+{% endblock body %}
+</html>
