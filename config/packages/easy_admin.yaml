@@ -18,6 +18,7 @@ easy_admin:
         - assets/js/custom.js
         - '/assets/bs-tags/bootstrap-tagsinput.js'
         - '/assets/smart-wizard/js/jquery.smartWizard.js'
+    form_theme: 'form/fields.html.twig'
     menu:
       - {label: "Entities"}
       - label: "Posts"
@@ -45,15 +46,15 @@ easy_admin:
       help: Shit videos
       form:
         fields:
-            - {type: 'group', icon: 'pencil', label: 'Basic Information', css_class: 'col-lg-7'}
+            - {type: 'group', icon: 'pencil', label: 'Basic Information', css_class: 'col-lg-12'}
             - title
             - {property: 'content'}
             - createdAt
             - published
-            - {type: 'group', icon: 'th-list', label: 'Other Information', css_class: 'col-lg-5'}
+            - {type: 'group', icon: 'th-list', label: 'Other Information', css_class: 'col-lg-6'}
             - category
             - { property: 'tags', type: 'App\Form\TagType', type_options: {attr: {data-role: 'tagsinput'}}}
-            - {type: 'group', icon: 'clip', label: 'Attachments', css_class: 'col-lg-5'}
+            - {type: 'group', icon: 'clip', label: 'Attachments', css_class: 'col-lg-6'}
             - { property: 'thumbnailFile', type: 'vich_image' }
             - { property: 'attachments', type: 'collection', type_options: {entry_type: 'App\Form\AttachmentType', by_reference: false} }
       list:
