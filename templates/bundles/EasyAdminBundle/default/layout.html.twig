@@ -147,6 +147,7 @@
 
                     {% block content_header_wrapper %}
                         {% set _has_content_help = _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
+                        {% block content_header %}
                         <div class="page-breadcrumb">
                             <div class="row">
                                 <div class="col-5">
@@ -170,6 +171,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% endblock content_header %}
                     {% endblock content_header_wrapper %}
 
                     {% block content %}
