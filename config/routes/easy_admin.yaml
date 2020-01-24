@@ -1,4 +1,5 @@
 easy_admin_bundle:
-    resource: '@EasyAdminBundle/Controller/EasyAdminController.php'
+#    resource: '@EasyAdminBundle/Controller/EasyAdminController.php'
+    resource: 'Controller/AdminController.php'
     prefix: /admin
     type: annotation

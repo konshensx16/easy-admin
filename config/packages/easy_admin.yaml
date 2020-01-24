@@ -40,7 +40,6 @@ easy_admin:
     name_property_path: 'fullName'
   entities:
     Post:
-      controller: App\Controller\PostController
       class: App\Entity\Post
       label: "Post"
       help: Shit videos
