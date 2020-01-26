@@ -13,6 +13,7 @@ class AdminController extends EasyAdminController
         $search = $this->request->get('search', null);
         $order = $this->request->get('order', null);
         $offset = $this->request->get('offset', null);
+        $sort = $this->request->get('sort', 'id');
         $limit = $this->request->get('limit', null);
         // get the searchable fields
         $class = $this->entity['class'];
@@ -25,7 +26,7 @@ class AdminController extends EasyAdminController
                 $criteria->orWhere($criteria->expr()->contains($field, $search));
             }
             if ($order) {
-                $criteria->orderBy(['id' => $order]);
+                $criteria->orderBy([$sort => $order]); // FIXME:
             }
             if (!is_null($offset)) {
                 $criteria->setFirstResult($offset);
@@ -52,7 +53,7 @@ class AdminController extends EasyAdminController
 
         // Serialize the data
         return $this->json([
-            'row' => $records,
+            'rows' => $records,
             'total' => count($records),
             'totalNotFiltered' => count($records) // FIXME: get the proper total
         ], 200, [], [

@@ -61,7 +61,7 @@ easy_admin:
         actions: [{name: new, icon: plus}'show', 'edit', 'delete']
         batch_actions: ['delete']
         title: "Some posts from the other world"
-        fields: ['title', 'content', 'createdAt', {property: 'user.email', label: 'Author', permission: 'ROLE_ADMIN'}, {property: 'thumbnail', type: 'image', base_path: '%uploads_path%'}]
+        fields: ['title', 'published', 'content', 'createdAt', {property: 'user.email', label: 'Author', permission: 'ROLE_ADMIN'}, {property: 'thumbnail', type: 'image', base_path: '%uploads_path%'}]
         filters: ['published']
       show:
         fields:
