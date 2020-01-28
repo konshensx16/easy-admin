@@ -136,11 +136,11 @@
         {{ include('@EasyAdmin/default/includes/_filters_modal.html.twig') }}
     {% endif %}
 {% endblock content_header %}
-
+{% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity_config.name) %}
 {% block main %}
     {% set _fields_visible_by_user = fields|filter((metadata, field) => easyadmin_is_granted(metadata.permission)) %}
     {% set _number_of_hidden_results = 0 %}
-    {% set _list_item_actions = easyadmin_get_actions_for_list_item(_entity_config.name) %}
+
 
     <table
         id="table"
@@ -190,19 +190,6 @@
 
     <script type="text/javascript">
         $(function() {
-            $('.action-delete').on('click', function(e) {
-                e.preventDefault();
-                const id = $(this).parents('tr').first().data('id');
-
-                $('#modal-delete').modal({ backdrop: true, keyboard: true })
-                    .off('click', '#modal-delete-button')
-                    .on('click', '#modal-delete-button', function () {
-                        let deleteForm = $('#delete-form');
-                        deleteForm.attr('action', deleteForm.attr('action').replace('__id__', id));
-                        deleteForm.trigger('submit');
-                    });
-            });
-
             {% if _has_filters %}
             // HTML5 specifies that a <script> tag inserted with innerHTML should not execute
             // https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#Security_considerations
@@ -347,6 +334,41 @@
                         }
                     },
                     {% endfor %}
+                    {% if _list_item_actions|length > 0 %}
+                    {
+                        title: "{{ 'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') }}",
+                        formatter: function (data, row, index) {
+                            let template = ``;
+                            {% for action in _list_item_actions %}
+                                {% if 'list' == action.name %}
+                                    {% set action_href = _request_parameters.referer|default('') ? _request_parameters.referer|easyadmin_urldecode : path('easyadmin', _request_parameters|merge({ action: 'list' })) %}
+                                {% elseif 'method' == action.type %}
+                                    {% set action_href = path('easyadmin', _request_parameters|merge({ action: action.name, id: '__id__' })) %}
+                                {% elseif 'route' == action.type %}
+                                    {% set action_href = path(action.name, _request_parameters|merge({ action: action.name, id: '__id__' })) %}
+                                {% endif %}
+
+                            template += `<a
+                                    class="{{ action.css_class|default('') }}"
+                                    data-id="${row.id}"
+                                    title="{{ action.title|default('') is empty ? "" : action.title|trans(_trans_params, _entity_config.translation_domain) }}"
+                                    href="{{ action_href }}"
+                                >
+                                    {% if action.icon %}
+                                        <i class="fa fa-fw fa-{{ action.icon }}"></i>
+                                    {% endif %}
+
+                                    {% if action.label is defined and not action.label is empty %}
+                                        {{ action.label|trans(_trans_parameters) }}
+                                    {% endif %}
+                                </a>`;
+                            {% endfor %}
+
+                            template = template.replace(/__id__/g, row.id);
+                            return template;
+                        }
+                    }
+                    {% endif %}
                 ],
                 onPostBody: function (data) {
                     if (data.length == 0) return false;
@@ -375,6 +397,19 @@
                             });
                         });
                     }
+
+                    $('.action-delete').on('click', function(e) {
+                        e.preventDefault();
+                        const id = e.target.dataset.id;
+
+                        $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                            .off('click', '#modal-delete-button')
+                            .on('click', '#modal-delete-button', function () {
+                                let deleteForm = $('#delete-form');
+                                deleteForm.attr('action', deleteForm.attr('action').replace('__id__', id));
+                                deleteForm.trigger('submit');
+                            });
+                    });
                 }
             })
         })
