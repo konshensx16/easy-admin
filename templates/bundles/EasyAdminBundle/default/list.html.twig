@@ -221,57 +221,6 @@
                 event.stopPropagation();
             });
             {% endif %}
-
-            {% if _has_batch_actions %}
-            const titleContent = $('.content-header-title > .title').html();
-            $(document).on('click', '.deselect-batch-button', function () {
-                $(this).closest('.content').find(':checkbox.form-batch-checkbox-all').prop('checked', false).trigger('change');
-            });
-            $(document).on('change', '.form-batch-checkbox-all', function () {
-                $(this).closest('.content').find(':checkbox.form-batch-checkbox').prop('checked', $(this).prop('checked')).trigger('change');
-            });
-            $(document).on('change', '.form-batch-checkbox', function () {
-                const $content = $(this).closest('.content');
-                let $input = $content.find(':hidden#batch_form_ids');
-                let ids = $input.val() ? $input.val().split(',') : [];
-                const id = $(this).val();
-
-                if ($(this).prop('checked')) {
-                    if (-1 === ids.indexOf(id)) {
-                        ids.push(id);
-                    }
-                } else {
-                    ids = ids.filter(function(value) { return value !== id });
-                    $content.find(':checkbox.form-batch-checkbox-all').prop('checked', false);
-                }
-
-                if (0 === ids.length) {
-                    $content.find('.global-actions').show();
-                    $content.find('.batch-actions').hide();
-                    $content.find('table').removeClass('table-batch');
-                } else {
-                    $content.find('.batch-actions').show();
-                    $content.find('.global-actions').hide();
-                    $content.find('table').addClass('table-batch');
-                }
-
-                $input.val(ids.join(','));
-                $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
-            });
-
-            $('button[name="batch_form[name]"].ask-confirm-batch-button').on('click', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                let $button = $(this);
-
-                $('#modal-batch-action').modal({ backdrop : true, keyboard : true })
-                    .off('click', '#modal-batch-action-button')
-                    .on('click', '#modal-batch-action-button', function () {
-                        $button.unbind('click');
-                        $button.trigger('click');
-                    });
-            });
-            {% endif %}
         });
     </script>
 
@@ -294,6 +243,13 @@
             $table.bootstrapTable('destroy').bootstrapTable({
                 height: 550,
                 columns: [
+                    {% if _has_batch_actions %}
+                    {
+                        field: '#',
+                        class: 'form-batch-checkbox',
+                        checkbox: true
+                    },
+                    {% endif %}
                     {% for field in fields %}
                     {
                         title: '{{ field.label }}',
@@ -411,7 +367,58 @@
                             });
                     });
                 }
-            })
+            }) // end of datatable
+            {% if _has_batch_actions %}
+            const titleContent = $('.content-header-title > .title').html();
+            $(document).on('click', '.deselect-batch-button', function () {
+                $(this).closest('body').find('input[name="btSelectAll"]').prop('checked', false).trigger('change');
+            });
+            $(document).on('change', 'input[name="btSelectAll"]', function () {
+                $(this).closest('body').find('.form-batch-checkbox input[name="btSelectItem"]').prop('checked', $(this).prop('checked')).trigger('change');
+            });
+            $(document).on('change', '.form-batch-checkbox', function () {
+                const $content = $(this).closest('body');
+                let $input = $content.find(':hidden#batch_form_ids');
+                let ids = $input.val() ? $input.val().split(',') : [];
+                let $el = $(this).find('input:checkbox');
+                const id = $el.val();
+
+                if ($el.prop('checked')) {
+                    if (-1 === ids.indexOf(id)) {
+                        ids.push(id);
+                    }
+                } else {
+                    ids = ids.filter(function(value) { return value !== id });
+                    $content.find(':checkbox.form-batch-checkbox-all').prop('checked', false);
+                }
+
+                if (0 === ids.length) {
+                    $content.find('.global-actions').show();
+                    $content.find('.batch-actions').hide();
+                    $content.find('table').removeClass('table-batch');
+                } else {
+                    $content.find('.batch-actions').show();
+                    $content.find('.global-actions').hide();
+                    $content.find('table').addClass('table-batch');
+                }
+
+                $input.val(ids.join(','));
+                $content.find('.content-header-title > .title').html(0 === ids.length ? titleContent : '');
+            });
+
+            $('button[name="batch_form[name]"].ask-confirm-batch-button').on('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                let $button = $(this);
+
+                $('#modal-batch-action').modal({ backdrop : true, keyboard : true })
+                    .off('click', '#modal-batch-action-button')
+                    .on('click', '#modal-batch-action-button', function () {
+                        $button.unbind('click');
+                        $button.trigger('click');
+                    });
+            });
+            {% endif %}
         })
     </script>
 {% endblock %}
