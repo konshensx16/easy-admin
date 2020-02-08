@@ -307,7 +307,7 @@
                             template += `<a
                                     class="{{ action.css_class|default('') }}"
                                     data-id="${row.id}"
-                                    title="{{ action.title|default('') is empty ? "" : action.title|trans(_trans_params, _entity_config.translation_domain) }}"
+                                    title="{{ action.title|default('') is empty ? "" : action.title|trans(_trans_parameters, _entity_config.translation_domain) }}"
                                     href="{{ action_href }}"
                                 >
                                     {% if action.icon %}
